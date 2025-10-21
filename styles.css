@@ -59,10 +59,14 @@ body{
 .brand-text .sub{font-size:12px;color:var(--muted);display:block}
 
 /* Nav */
+.nav{
+  /* Add transitions for smooth mobile toggle */
+  transition: max-height 0.4s var(--ease), opacity 0.4s var(--ease);
+}
 .nav-list{display:flex;gap:18px;list-style:none;margin:0;padding:0}
 .nav-list a{color:var(--muted);text-decoration:none;font-weight:600;font-size:14px;transition:color .2s}
 .nav-list a:hover{color:var(--accent)}
-.nav-toggle{display:none;background:none;border:0;color:inherit;padding:8px;cursor:pointer}
+.nav-toggle{display:none;background:none;border:0;color:inherit;padding:8px;cursor:pointer;z-index:70} /* Added z-index */
 .hamburger{display:block;width:22px;height:2px;background:var(--accent);position:relative}
 .hamburger::before,.hamburger::after{content:"";position:absolute;left:0;width:22px;height:2px;background:var(--accent);transition:transform .2s}
 .hamburger::before{top:-7px}
@@ -111,9 +115,41 @@ body{
   border: 1px solid rgba(255,255,255,0.03);
   box-shadow: 0 10px 30px rgba(7,20,34,0.6);
 }
-.profile-photo{width:100%;height:220px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+/* Updated profile-photo styles for the image */
+.profile-photo{
+  width:100%;
+  height:260px; /* Increased height for better mobile visibility */
+  border-radius:12px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:12px
+}
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures image covers the container without distortion */
+  display: block;
+}
 .profile-meta h3{margin:0}
 .profile-meta p.muted{color:var(--muted);margin:6px 0}
+.social-inline {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+.social-inline a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.social-inline a:hover {
+  color: var(--accent);
+}
+
 
 /* ABOUT */
 .about-grid{display:grid;grid-template-columns: 1fr 300px;gap:24px;align-items:start}
@@ -127,7 +163,18 @@ body{
 .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .project-card{background:linear-gradient(0deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);transition:transform .2s,var(--ease)}
 .project-card:hover{transform:translateY(-8px)}
-.project-media img{width:100%;height:140px;object-fit:cover;display:block}
+.project-media{
+  /* Add a background color to make it visible */
+  background-color: var(--card); 
+  /* Add a border to indicate it's a placeholder */
+  border-bottom: 1px solid rgba(255,255,255,0.08); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--muted);
+  height: 140px; /* Keep existing height */
+}
 .project-body{padding:14px}
 .project-actions{margin-top:12px;display:flex;gap:8px}
 
@@ -135,12 +182,16 @@ body{
 .contact-grid{display:grid;grid-template-columns: 1fr 320px;gap:24px}
 .contact-card{background:var(--card);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
 .contact-list{list-style:none;padding:0;margin:12px 0 0;color:var(--muted)}
+.contact-list a { color: var(--accent); } /* Added for contrast */
 .social-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.social-btn{display:inline-block;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);text-decoration:none;color:var(--muted);font-weight:600}
+.social-btn{display:inline-block;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);text-decoration:none;color:var(--muted);font-weight:600;transition: border-color .2s, color .2s}
+.social-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 /* FOOTER */
 .site-footer{padding:18px 0;border-top:1px solid rgba(255,255,255,0.02);margin-top:30px;background:transparent}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--muted);font-size:14px}
+.footer-links a { color: var(--muted); text-decoration: none; transition: color .2s}
+.footer-links a:hover { color: var(--accent); }
 
 /* reveal animations (initial state) */
 .reveal{opacity:0;transform:translateY(10px) translateZ(0);transition:opacity .6s var(--ease),transform .6s var(--ease)}
@@ -157,11 +208,47 @@ body{
   .projects-grid{grid-template-columns:repeat(2,1fr)}
   .contact-grid{grid-template-columns:1fr}
   .container{width:calc(100% - 28px)}
+  .profile-photo{height: 300px;} /* Taller on tablets/small desktops */
 }
 @media (max-width:640px){
-  .nav-list{display:none}
+  /* Mobile nav */
+  .nav {
+    position: absolute;
+    top: 72px; /* Below the header */
+    left: 0;
+    right: 0;
+    max-height: 0; /* Hidden by default */
+    overflow: hidden;
+    background: var(--bg);
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .nav.open {
+    max-height: 200px; /* Adjust as needed, a large enough value */
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-list{
+    display:flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    gap: 10px;
+  }
+  .nav-list a {
+    display: block;
+    padding: 8px 0;
+    font-size: 16px;
+  }
   .nav-toggle{display:block}
+  
+  /* Layout adjustments */
   .hero-grid{gap:18px}
   .projects-grid{grid-template-columns:1fr}
   body{padding-top:64px}
+  .site-header{height:64px;}
+  .header-inner{height:64px;}
+  .nav { top: 64px; } /* Adjust nav position for new header height */
+  .profile-photo{height: 220px;} /* Smaller on phones */
 }

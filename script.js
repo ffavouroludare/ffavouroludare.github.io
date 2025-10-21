@@ -13,13 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
   navToggle && navToggle.addEventListener('click', () => {
     const expanded = navToggle.getAttribute('aria-expanded') === 'true';
     navToggle.setAttribute('aria-expanded', String(!expanded));
+    // The 'open' class will control the transition via max-height/opacity in CSS
     nav.classList.toggle('open');
-    // A simple slide-down effect using height
-    if (nav.classList.contains('open')) {
-      nav.style.display = 'block';
-    } else {
-      nav.style.display = '';
-    }
   });
 
   // Smooth scrolling for internal anchors
@@ -28,6 +23,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const targetId = this.getAttribute('href').slice(1);
       if (!targetId) return; // might be '#'
       e.preventDefault();
+      
+      // Close mobile nav on click
+      if (nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+
       const el = document.getElementById(targetId);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
